@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Failure Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.13);
+            padding: 18px 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 290px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-3px) scale(1.01);
+        }
+
+        .form-container h2 {
+            color: #ecf0f1;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #ecf0f1;
+            font-size: 0.92rem;
+            margin-bottom: 3px;
+        }
+
+        .form-group input[type='text'] {
+            width: 100%;
+            padding: 7px 9px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            font-size: 0.93rem;
+            background: rgba(255, 255, 255, 0.13);
+            color: #ecf0f1;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input[type='text']:focus {
+            border-color: #0984e3;
+            box-shadow: 0 0 8px rgba(9, 132, 227, 0.3);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .form-group input[type='text']::placeholder {
+            color: #b2bec3;
+        }
+
+        .submit-btn {
+            background: linear-gradient(90deg, #36d1c4 0%, #1e3799 100%);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.25);
+            padding: 10px 0;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 18px 0 rgba(30,55,153,0.13);
+            transition: 
+                background 0.3s,
+                box-shadow 0.3s,
+                transform 0.2s;
+        }
+
+        .submit-btn:hover, .submit-btn:focus {
+            background: linear-gradient(90deg, #1e3799 0%, #36d1c4 100%);
+            box-shadow: 0 0 12px 2px #36d1c488, 0 4px 18px 0 rgba(30,55,153,0.13);
+            transform: translateY(-2px) scale(1.03);
+            outline: none;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 7px;
+            font-size: 0.98rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.13);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .result.low-risk {
+            color: #55efc4;
+            border-color: #55efc4;
+        }
+
+        .result.high-risk {
+            color: #ff7675;
+            border-color: #ff7675;
+        }
+
+        .result:empty {
+            display: none;
+        }
+
+        /* Tooltip styles */
+        .result-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .result-tooltip .tooltiptext {
+            visibility: hidden;
+            width: 170px;
+            background: #ff7675;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 7px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -85px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .result-tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 12px;
+                margin: 6px;
+                max-width: 98vw;
+            }
+
+            .form-container h2 {
+                font-size: 1.05rem;
+            }
+
+            .submit-btn {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form action="/predict" method="POST">
+        <div class="form-container">
+            <h2>Heart Failure Prediction</h2>
+            <div class="form-group">
+                <label for="Age">Age (years):</label>
+                <input type="text" name="Age" id="Age" placeholder="e.g., 50" required>
+            </div>
+            <div class="form-group">
+                <label for="Weight">Weight (kg):</label>
+                <input type="text" name="Weight" id="Weight" placeholder="e.g., 70.5" required>
+            </div>
+            <div class="form-group">
+                <label for="Orthopnoea">Orthopnoea (0=No, 1=Yes):</label>
+                <input type="text" name="Orthopnoea" id="Orthopnoea" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="T2DM">T2DM (0=No, 1=Yes):</label>
+                <input type="text" name="T2DM" id="T2DM" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="HTN">HTN (0=No, 1=Yes):</label>
+                <input type="text" name="HTN" id="HTN" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="IHD">IHD (0=No, 1=Yes):</label>
+                <input type="text" name="IHD" id="IHD" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="PVD_PAD">PVD/PAD (0=No, 1=Yes):</label>
+                <input type="text" name="PVD_PAD" id="PVD_PAD" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="Obesity">Obesity (0=No, 1=Yes):</label>
+                <input type="text" name="Obesity" id="Obesity" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="ECHO">ECHO (0=Normal, 1=Abnormal):</label>
+                <input type="text" name="ECHO" id="ECHO" placeholder="0 or 1" required>
+            </div>
+            <div class="form-group">
+                <label for="Ejection_Fraction">Ejection Fraction (0-1):</label>
+                <input type="text" name="Ejection_Fraction" id="Ejection_Fraction" placeholder="e.g., 0.55" required>
+            </div>
+            <input type="submit" value="Predict" class="submit-btn">
+            {% if result %}
+                {% if result == 1 %}
+                    <div class="result result-tooltip high-risk">
+                        Heart failure predicted
+                        <span class="tooltiptext">Heart failure predicted</span>
+                    </div>
+                {% else %}
+                    <div class="result low-risk">Heart failure not predicted</div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+</body>
+</html>

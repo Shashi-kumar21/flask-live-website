@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background: url("{{ url_for('static', filename='bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-container {
+            background: rgba(255,255,255,0.92);
+            padding: 18px 22px;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+            width: 270px;
+            text-align: center;
+            backdrop-filter: blur(2px);
+        }
+        .form-container h2 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 3px;
+            font-size: 0.97rem;
+        }
+        .form-group input[type='text'] {
+            width: 100%;
+            padding: 7px 9px;
+            border-radius: 6px;
+            border: 1.5px solid #d1d1d1;
+            font-size: 0.97rem;
+            background-color: #f7f7f7;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-group input[type='text']:focus {
+            border-color: #6a82fb;
+            background-color: #fff;
+        }
+        .submit-btn {
+            background: linear-gradient(90deg, #6a82fb 0%, #fc5c7d 100%);
+            color: white;
+            border: none;
+            padding: 8px 0;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #fc5c7d 0%, #6a82fb 100%);
+        }
+        .result {
+            font-weight: bold;
+            margin-top: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            background-color:#f1f1f1;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <form action='/predict' method="POST">
+        <div class="form-container">
+            <h2>Heart Disease Prediction</h2>
+            <div class="form-group">
+                <label for="stair">Stair:</label>
+                <input type="text" name="stair" id="stair">
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="text" name="age" id="age">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender (0=Female, 1=Male):</label>
+                <input type="text" name="gender" id="gender">
+            </div>
+            <div class="form-group">
+                <label for="DM">Diabetes Mellitus (0=No, 1=Yes):</label>
+                <input type="text" name="DM" id="DM">
+            </div>
+            <div class="form-group">
+                <label for="CKD">Chronic Kidney Disease (0=No, 1=Yes):</label>
+                <input type="text" name="CKD" id="CKD">
+            </div>
+            <div class="form-group">
+                <label for="Edema">Edema (0=No, 1=Yes):</label>
+                <input type="text" name="Edema" id="Edema">
+            </div>
+            <div class="form-group">
+                <label for="Tobaccouse">Tobacco Use (0=No, 1=Yes):</label>
+                <input type="text" name="Tobaccouse" id="Tobaccouse">
+            </div>
+            <div class="form-group">
+                <label for="sbp">Systolic BP:</label>
+                <input type="text" name="sbp" id="sbp">
+            </div>
+            <div class="form-group">
+                <label for="dbp">Diastolic BP:</label>
+                <input type="text" name="dbp" id="dbp">
+            </div>
+            <div class="form-group">
+                <label for="TotalCholestrol">Total Cholesterol:</label>
+                <input type="text" name="TotalCholestrol" id="TotalCholestrol">
+            </div>
+            <div class="form-group">
+                <label for="LDL">LDL:</label>
+                <input type="text" name="LDL" id="LDL">
+            </div>
+            <input type="submit" value="Predict" class="submit-btn">
+            {% if result %}
+            <div class="result">{{ result }}</div>
+            {% endif %}
+        </div>
+    </form>
+</body>
+</html>
